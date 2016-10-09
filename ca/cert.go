@@ -9,6 +9,20 @@ import (
 	"github.com/juliengk/go-cert/pkix"
 )
 
+type CertDate struct {
+	Now	time.Time
+	Expire	time.Time
+}
+
+func CreateDate(month int) CertDate {
+	now := time.Now()
+
+	return CertDate{
+		Now: now,
+		Expire: now.AddDate(0, month, 0),
+	}
+}
+
 func CreateTemplate(isCA bool, subject cpkix.Name, altnames pkix.AltNames, date CertDate, sn int) (*x509.Certificate, error) {
 	template := &x509.Certificate{
 		SubjectKeyId: []byte{1, 2, 3},
@@ -34,18 +48,4 @@ func CreateTemplate(isCA bool, subject cpkix.Name, altnames pkix.AltNames, date 
 	}
 
 	return template, nil
-}
-
-type CertDate struct {
-	Now	time.Time
-	Expire	time.Time
-}
-
-func CreateDate(month int) CertDate {
-	now := time.Now()
-
-	return CertDate{
-		Now: now,
-		Expire: now.AddDate(0, month, 0),
-	}
 }
