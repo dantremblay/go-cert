@@ -29,7 +29,7 @@ func (ca *CA) IncrementSerialNumber() (int, error) {
 		return 0, err
 	}
 
-	return sn+1, nil
+	return sn + 1, nil
 }
 
 func (ca *CA) WriteSerialNumber(sn int) error {

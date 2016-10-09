@@ -101,8 +101,8 @@ func NewCA(rootDir string) (*CA, error) {
 	}
 
 	return &CA{
-		RootDir: rootDir,
-		Key: key,
+		RootDir:     rootDir,
+		Key:         key,
 		Certificate: certificate,
 	}, nil
 }

@@ -9,8 +9,8 @@ import (
 )
 
 type Certificate struct {
-	Bytes	[]byte
-	Crt	*x509.Certificate
+	Bytes []byte
+	Crt   *x509.Certificate
 }
 
 func NewCertificateFromDER(data []byte) (*Certificate, error) {
@@ -21,7 +21,7 @@ func NewCertificateFromDER(data []byte) (*Certificate, error) {
 
 	return &Certificate{
 		Bytes: data,
-		Crt: crt,
+		Crt:   crt,
 	}, nil
 }
 
@@ -45,7 +45,7 @@ func NewCertificateFromPEMFile(path string) (*Certificate, error) {
 
 func (c *Certificate) ToPEM() ([]byte, error) {
 	block := &pem.Block{
-		Type: "CERTIFICATE",
+		Type:  "CERTIFICATE",
 		Bytes: c.Bytes,
 	}
 

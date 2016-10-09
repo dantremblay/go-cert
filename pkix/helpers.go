@@ -7,8 +7,8 @@ import (
 )
 
 type AltNames struct {
-	EmailAddresses	CertEmails
-	DNSNames	CertDNSNames
+	EmailAddresses CertEmails
+	DNSNames       CertDNSNames
 }
 
 type CertEmails []string
@@ -36,7 +36,7 @@ func NewSubject(country, state, city, o, ou, cn string) pkix.Name {
 func NewSubjectAltNames(emailAddresses, dnsNames []string) AltNames {
 	return AltNames{
 		EmailAddresses: emailAddresses,
-		DNSNames: dnsNames,
+		DNSNames:       dnsNames,
 	}
 }
 

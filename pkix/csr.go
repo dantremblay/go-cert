@@ -10,14 +10,14 @@ import (
 )
 
 type CertificateRequest struct {
-	Bytes	[]byte
-	CR	*x509.CertificateRequest
+	Bytes []byte
+	CR    *x509.CertificateRequest
 }
 
 func CreateRequestTemplate(pubkey *rsa.PublicKey, subject pkix.Name, altnames AltNames) (*x509.CertificateRequest, error) {
 	template := &x509.CertificateRequest{
 		PublicKey: pubkey,
-		Subject: subject,
+		Subject:   subject,
 	}
 
 	if len(altnames.EmailAddresses) > 0 {
@@ -44,7 +44,7 @@ func NewCertificateRequest(key *Key, subject pkix.Name, altnames AltNames) (*Cer
 
 	cr := &CertificateRequest{
 		Bytes: derBytes,
-		CR: template,
+		CR:    template,
 	}
 
 	return cr, nil
@@ -58,7 +58,7 @@ func NewCertificateRequestFromDER(data []byte) (*CertificateRequest, error) {
 
 	return &CertificateRequest{
 		Bytes: data,
-		CR: cr,
+		CR:    cr,
 	}, nil
 }
 

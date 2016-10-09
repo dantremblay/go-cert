@@ -10,15 +10,15 @@ import (
 )
 
 type CertDate struct {
-	Now	time.Time
-	Expire	time.Time
+	Now    time.Time
+	Expire time.Time
 }
 
 func CreateDate(month int) CertDate {
 	now := time.Now()
 
 	return CertDate{
-		Now: now,
+		Now:    now,
 		Expire: now.AddDate(0, month, 0),
 	}
 }
@@ -27,11 +27,11 @@ func CreateTemplate(isCA bool, subject cpkix.Name, altnames pkix.AltNames, date 
 	template := &x509.Certificate{
 		SubjectKeyId: []byte{1, 2, 3},
 		SerialNumber: big.NewInt(int64(sn)),
-		Subject: subject,
-		NotBefore: date.Now,
-		NotAfter: date.Expire,
-		KeyUsage: x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
-		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
+		Subject:      subject,
+		NotBefore:    date.Now,
+		NotAfter:     date.Expire,
+		KeyUsage:     x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
+		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
 	}
 
 	if isCA {

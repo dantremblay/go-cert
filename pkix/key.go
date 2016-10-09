@@ -1,8 +1,8 @@
 package pkix
 
 import (
-	"crypto/rsa"
 	"crypto/rand"
+	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
@@ -11,9 +11,9 @@ import (
 )
 
 type Key struct {
-	Private	*rsa.PrivateKey
-	Public	*rsa.PublicKey
-	Bytes	[]byte
+	Private *rsa.PrivateKey
+	Public  *rsa.PublicKey
+	Bytes   []byte
 }
 
 func NewKey(bits int) (*Key, error) {
@@ -44,7 +44,7 @@ func (k *Key) ToDER() ([]byte, error) {
 
 func (k *Key) ToPEM() ([]byte, error) {
 	block := &pem.Block{
-		Type: "RSA PRIVATE KEY",
+		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(k.Private),
 	}
 
@@ -82,6 +82,6 @@ func NewKeyFromPEMFile(path string) (*Key, error) {
 
 	return &Key{
 		Private: privateKey,
-		Bytes: block.Bytes,
+		Bytes:   block.Bytes,
 	}, nil
 }
