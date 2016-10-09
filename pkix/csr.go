@@ -2,6 +2,7 @@ package pkix
 
 import (
 	"crypto/rand"
+	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -13,8 +14,9 @@ type CertificateRequest struct {
 	CR	*x509.CertificateRequest
 }
 
-func CreateRequestTemplate(subject pkix.Name, altnames AltNames) (*x509.CertificateRequest, error) {
+func CreateRequestTemplate(pubkey *rsa.PublicKey, subject pkix.Name, altnames AltNames) (*x509.CertificateRequest, error) {
 	template := &x509.CertificateRequest{
+		PublicKey: pubkey,
 		Subject: subject,
 	}
 
@@ -30,7 +32,7 @@ func CreateRequestTemplate(subject pkix.Name, altnames AltNames) (*x509.Certific
 }
 
 func NewCertificateRequest(key *Key, subject pkix.Name, altnames AltNames) (*CertificateRequest, error) {
-	template, err := CreateRequestTemplate(subject, altnames)
+	template, err := CreateRequestTemplate(key.Public, subject, altnames)
 	if err != nil {
 		return nil, err
 	}
