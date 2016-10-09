@@ -5,6 +5,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"io/ioutil"
+	"time"
 )
 
 type Certificate struct {
@@ -54,4 +55,14 @@ func (c *Certificate) ToPEM() ([]byte, error) {
 	}
 
 	return pemBytes, nil
+}
+
+func (c *Certificate) IsExpired() bool {
+	now := time.Now()
+
+	if now.After(c.Crt.NotAfter) {
+		return true
+	}
+
+	return false
 }
