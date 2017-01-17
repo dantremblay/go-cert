@@ -7,12 +7,12 @@ import (
 )
 
 type AltNames struct {
-	EmailAddresses CertEmails
 	DNSNames       CertDNSNames
+	EmailAddresses CertEmails
 }
 
-type CertEmails []string
 type CertDNSNames []string
+type CertEmails []string
 
 func IsPathExists(path string) bool {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -33,19 +33,11 @@ func NewSubject(country, state, city, o, ou, cn string) pkix.Name {
 	}
 }
 
-func NewSubjectAltNames(emailAddresses, dnsNames []string) AltNames {
+func NewSubjectAltNames(dnsNames, emailAddresses []string) AltNames {
 	return AltNames{
-		EmailAddresses: emailAddresses,
 		DNSNames:       dnsNames,
+		EmailAddresses: emailAddresses,
 	}
-}
-
-func NewEmails() CertEmails {
-	return CertEmails{}
-}
-
-func (e CertEmails) AddEmail(email string) {
-	e = append(e, email)
 }
 
 func NewDNSNames() CertDNSNames {
@@ -54,6 +46,14 @@ func NewDNSNames() CertDNSNames {
 
 func (d CertDNSNames) AddDNS(dns string) {
 	d = append(d, dns)
+}
+
+func NewEmails() CertEmails {
+	return CertEmails{}
+}
+
+func (e CertEmails) AddEmail(email string) {
+	e = append(e, email)
 }
 
 func ToPEMFile(path string, pemBytes []byte, mode os.FileMode) error {

@@ -20,12 +20,12 @@ func CreateRequestTemplate(pubkey *rsa.PublicKey, subject pkix.Name, altnames Al
 		Subject:   subject,
 	}
 
-	if len(altnames.EmailAddresses) > 0 {
-		template.EmailAddresses = altnames.EmailAddresses
-	}
-
 	if len(altnames.DNSNames) > 0 {
 		template.DNSNames = altnames.DNSNames
+	}
+
+	if len(altnames.EmailAddresses) > 0 {
+		template.EmailAddresses = altnames.EmailAddresses
 	}
 
 	return template, nil
@@ -68,8 +68,8 @@ func (cr *CertificateRequest) GetSubject() pkix.Name {
 
 func (cr *CertificateRequest) GetSubjectAltNames() AltNames {
 	return AltNames{
-		EmailAddresses: cr.CR.EmailAddresses,
 		DNSNames:       cr.CR.DNSNames,
+		EmailAddresses: cr.CR.EmailAddresses,
 	}
 }
 
