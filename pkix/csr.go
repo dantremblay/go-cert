@@ -28,6 +28,10 @@ func CreateRequestTemplate(pubkey *rsa.PublicKey, subject pkix.Name, altnames Al
 		template.EmailAddresses = altnames.EmailAddresses
 	}
 
+	if len(altnames.IPAddresses) > 0 {
+		template.IPAddresses = altnames.IPAddresses
+	}
+
 	return template, nil
 }
 
@@ -70,6 +74,7 @@ func (cr *CertificateRequest) GetSubjectAltNames() AltNames {
 	return AltNames{
 		DNSNames:       cr.CR.DNSNames,
 		EmailAddresses: cr.CR.EmailAddresses,
+		IPAddresses:    cr.CR.IPAddresses,
 	}
 }
 
