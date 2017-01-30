@@ -70,7 +70,7 @@ func CreateCrt(crt []byte, crtFile string) error {
 		return err
 	}
 
-	err = pkix.ToPEMFile(crtFile, crtBytes, 0400)
+	err = pkix.ToPEMFile(crtFile, crtBytes, 0444)
 	if err != nil {
 		return err
 	}
