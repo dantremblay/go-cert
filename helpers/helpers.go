@@ -2,11 +2,13 @@ package helpers
 
 import (
 	"fmt"
+	"net"
 	"strconv"
 	"time"
 
 	"github.com/juliengk/go-cert/ca"
 	"github.com/juliengk/go-cert/pkix"
+	"github.com/juliengk/go-utils/validation"
 )
 
 func CreateKey(bits int, keyFile string) (*pkix.Key, error) {
@@ -28,17 +30,28 @@ func CreateKey(bits int, keyFile string) (*pkix.Key, error) {
 	return key, nil
 }
 
-func CreateCSR(country, state, locality, org, ou, cn, email string, key *pkix.Key) (*pkix.CertificateRequest, error) {
+func CreateCSR(country, state, locality, org, ou, cn, email string, altnames []string, key *pkix.Key) (*pkix.CertificateRequest, error) {
 	subject := pkix.NewSubject(country, state, locality, org, ou, cn)
 
-	ne := pkix.NewEmails()
-	ne.AddEmail(email)
-
 	ndn := pkix.NewDNSNames()
+	ne := pkix.NewEmails()
+	nip := pkix.NewIPs()
 
-	altnames := pkix.NewSubjectAltNames(ne, ndn)
+	if len(email) > 0 {
+		ne.AddEmail(email)
+	}
 
-	csr, err := pkix.NewCertificateRequest(key, subject, altnames)
+	for _, an := range altnames {
+		if err := validation.IsValidIP(an); err == nil {
+			nip.AddIP(net.ParseIP(an))
+		} else {
+			ndn.AddDNS(an)
+		}
+	}
+
+	ans := pkix.NewSubjectAltNames(ndn, ne, nip)
+
+	csr, err := pkix.NewCertificateRequest(key, subject, ans)
 	if err != nil {
 		return &pkix.CertificateRequest{}, err
 	}
