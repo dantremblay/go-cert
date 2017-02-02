@@ -16,17 +16,14 @@ var (
 func IsValidCACommonName(cn string) error {
 	blacklisted := []string{
 		"Root",
-		"root",
 		"Intermediate",
-		"intermediate",
 		"CA",
-		"ca",
 	}
 
 	words := strings.Split(cn, " ")
 
 	for _, word := range words {
-		if utils.StringInSlice(word, blacklisted) {
+		if utils.StringInSlice(word, blacklisted, true) {
 			return NotValidCACommonName
 		}
 	}
@@ -45,15 +42,13 @@ func IsValidCAType(catype string) error {
 func IsValidCAOrgUnit(ou string) error {
 	blacklisted := []string{
 		"Certificate",
-		"certificate",
 		"Authority",
-		"authority",
 	}
 
 	words := strings.Split(ou, " ")
 
 	for _, word := range words {
-		if utils.StringInSlice(word, blacklisted) {
+		if utils.StringInSlice(word, blacklisted, true) {
 			return NotValidCAOU
 		}
 	}
