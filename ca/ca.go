@@ -3,6 +3,7 @@ package ca
 import (
 	"crypto/rand"
 	"crypto/x509"
+	"fmt"
 	"path"
 
 	"github.com/juliengk/go-cert/pkix"
@@ -15,39 +16,50 @@ type CA struct {
 	Certificate *pkix.Certificate
 }
 
-func InitCA(rootDir string, template *x509.Certificate) error {
+func InitCA(rootDir string, template *x509.Certificate) (*CA, error) {
 	caDir := path.Join(rootDir, "ca")
-	certsDir := path.Join(rootDir, "certs")
-	caKeyFile := path.Join(caDir, "ca.key")
-	caCrtFile := path.Join(caDir, "ca.crt")
+	privateDir := path.Join(caDir, "private")
+	certsDir := path.Join(caDir, "certs")
+	crlDir := path.Join(caDir, "crl")
+
+	caKeyFile := path.Join(privateDir, "ca.key")
+	caCrtFile := path.Join(certsDir, "ca.crt")
 
 	if err := filedir.CreateDirIfNotExist(caDir, 0755); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := filedir.CreateDirIfNotExist(certsDir, 0755); err != nil {
-		return err
+		return nil, err
 	}
 
-	newCA := &CA{
-		RootDir: rootDir,
+	if err := filedir.CreateDirIfNotExist(crlDir, 0755); err != nil {
+		return nil, err
+	}
+
+	if err := filedir.CreateDirIfNotExist(privateDir, 0755); err != nil {
+		return nil, err
 	}
 
 	if !filedir.FileExists(caKeyFile) {
+		newCA := &CA{
+			RootDir: rootDir,
+		}
+
 		// generate private key
 		key, err := pkix.NewKey(2048)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		keyBytes, err := key.ToPEM()
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		err = pkix.ToPEMFile(caKeyFile, keyBytes, 0400)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		// generate self-signed certificate
@@ -55,36 +67,48 @@ func InitCA(rootDir string, template *x509.Certificate) error {
 
 		derBytes, err := IssueCertificate(template, parent, key.Public, key.Private)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		// create certificate PEM file
 		certificate, err := pkix.NewCertificateFromDER(derBytes)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		crtBytes, err := certificate.ToPEM()
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		err = pkix.ToPEMFile(caCrtFile, crtBytes, 0400)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		// create serial number file
 		newCA.WriteSerialNumber(int(certificate.Crt.SerialNumber.Int64()))
+
+		newCA.Key = key
+		newCA.Certificate = certificate
+
+		return newCA, nil
 	}
 
-	return nil
+	return nil, nil
 }
 
 func NewCA(rootDir string) (*CA, error) {
 	caDir := path.Join(rootDir, "ca")
-	caKeyFile := path.Join(caDir, "ca.key")
-	caCrtFile := path.Join(caDir, "ca.crt")
+	privateDir := path.Join(caDir, "private")
+	certsDir := path.Join(caDir, "certs")
+
+	caKeyFile := path.Join(privateDir, "ca.key")
+	caCrtFile := path.Join(certsDir, "ca.crt")
+
+	if !filedir.FileExists(caKeyFile) && !filedir.FileExists(caCrtFile) {
+		return nil, fmt.Errorf("CA key and/or certificate do not exist")
+	}
 
 	key, err := pkix.NewKeyFromPEMFile(caKeyFile)
 	if err != nil {
