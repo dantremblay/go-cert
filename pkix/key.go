@@ -8,6 +8,8 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+
+	"github.com/juliengk/go-utils/filedir"
 )
 
 type Key struct {
@@ -57,7 +59,7 @@ func (k *Key) ToPEM() ([]byte, error) {
 }
 
 func NewKeyFromPEMFile(path string) (*Key, error) {
-	if !IsPathExists(path) {
+	if !filedir.FileExists(path) {
 		return nil, errors.New(fmt.Sprintf("%s does not exist", path))
 	}
 

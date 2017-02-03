@@ -3,10 +3,10 @@ package ca
 import (
 	"crypto/rand"
 	"crypto/x509"
-	"os"
 	"path"
 
 	"github.com/juliengk/go-cert/pkix"
+	"github.com/juliengk/go-utils/filedir"
 )
 
 type CA struct {
@@ -21,23 +21,19 @@ func InitCA(rootDir string, template *x509.Certificate) error {
 	caKeyFile := path.Join(caDir, "ca.key")
 	caCrtFile := path.Join(caDir, "ca.crt")
 
-	if !pkix.IsPathExists(caDir) {
-		if err := os.Mkdir(caDir, 0755); err != nil {
-			return err
-		}
+	if err := filedir.CreateDirIfNotExist(caDir, 0755); err != nil {
+		return err
 	}
 
-	if !pkix.IsPathExists(certsDir) {
-		if err := os.Mkdir(certsDir, 0755); err != nil {
-			return err
-		}
+	if err := filedir.CreateDirIfNotExist(certsDir, 0755); err != nil {
+		return err
 	}
 
 	newCA := &CA{
 		RootDir: rootDir,
 	}
 
-	if !pkix.IsPathExists(caKeyFile) {
+	if !filedir.FileExists(caKeyFile) {
 		// generate private key
 		key, err := pkix.NewKey(2048)
 		if err != nil {

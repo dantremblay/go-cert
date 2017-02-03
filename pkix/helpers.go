@@ -17,14 +17,6 @@ type CertDNSNames []string
 type CertEmails []string
 type CertIPs []net.IP
 
-func IsPathExists(path string) bool {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false
-	}
-
-	return true
-}
-
 func NewSubject(country, state, city, o, ou, cn string) pkix.Name {
 	return pkix.Name{
 		Country:            []string{country},
