@@ -7,6 +7,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"errors"
+	"fmt"
 )
 
 type CertificateRequest struct {
@@ -68,6 +69,12 @@ func NewCertificateRequestFromDER(data []byte) (*CertificateRequest, error) {
 
 func (cr *CertificateRequest) GetSubject() pkix.Name {
 	return cr.CR.Subject
+}
+
+func (cr *CertificateRequest) SubjectToString() string {
+	sbj := cr.CR.Subject
+
+	return fmt.Sprintf("/C=%s ST=%s L=%s O=%s OU=%s CN=%s", sbj.Country[0], sbj.Province[0], sbj.Locality[0], sbj.Organization[0], sbj.OrganizationalUnit[0], sbj.CommonName)
 }
 
 func (cr *CertificateRequest) GetSubjectAltNames() AltNames {
