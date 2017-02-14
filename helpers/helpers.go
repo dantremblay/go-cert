@@ -112,16 +112,16 @@ func IssueCrt(csr *pkix.CertificateRequest, duration int, caDir string) ([]byte,
 }
 
 func ExpireDateString(notafter time.Time) string {
-        year := strconv.Itoa(notafter.Year())
-        month := strconv.Itoa(int(notafter.Month()))
-        day := strconv.Itoa(notafter.Day())
+	year := strconv.Itoa(notafter.Year())
+	month := strconv.Itoa(int(notafter.Month()))
+	day := strconv.Itoa(notafter.Day())
 
-        if len(month) == 1 {
-                month = fmt.Sprintf("0%s", month)
-        }
-        if len(day) == 1 {
-                day = fmt.Sprintf("0%s", day)
-        }
+	if len(month) == 1 {
+		month = fmt.Sprintf("0%s", month)
+	}
+	if len(day) == 1 {
+		day = fmt.Sprintf("0%s", day)
+	}
 
-        return fmt.Sprintf("%s-%s-%s", year, month, day)
+	return fmt.Sprintf("%s-%s-%s", year, month, day)
 }
