@@ -47,7 +47,7 @@ func InitCA(rootDir string, template *x509.Certificate) (*CA, error) {
 		}
 
 		// generate private key
-		key, err := pkix.NewKey(2048)
+		key, err := pkix.NewKey(4096)
 		if err != nil {
 			return nil, err
 		}
