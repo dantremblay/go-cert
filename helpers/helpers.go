@@ -93,7 +93,7 @@ func IssueCrt(csr *pkix.CertificateRequest, duration int, caDir string) ([]byte,
 		return nil, err
 	}
 
-	template, err := ca.CreateTemplate(false, caSubject, caSubjectAltNames, caDate, caSN)
+	template, err := ca.CreateTemplate(false, caSubject, caSubjectAltNames, caDate, caSN, "")
 	if err != nil {
 		return nil, err
 	}
